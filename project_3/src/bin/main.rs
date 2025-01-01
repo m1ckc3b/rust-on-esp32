@@ -28,12 +28,16 @@ fn main() -> ! {
     // start timer with timestamp values in the range of 0..=99 and a frequency
     // of 20 kHz
     let timer_clock_cfg = clock_cfg
-        .timer_clock_with_frequency(99, PwmWorkingMode::Increase, 5000.kHz())
+        .timer_clock_with_frequency(99, PwmWorkingMode::Increase, 20.kHz())
         .unwrap();
     mcpwm.timer0.start(timer_clock_cfg);
 
     // pin will be high 50% of the time
     pwm_pin.set_timestamp(50);
 
-    loop {}
+    loop {
+        // TODO: increase the LED brightness
+
+        // TODO: decrease the LED brightness
+    }
 }
