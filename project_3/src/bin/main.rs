@@ -26,26 +26,29 @@ fn main() -> ! {
         .operator0
         .with_pin_a(led, PwmPinConfig::UP_ACTIVE_HIGH);
 
-    // start timer with timestamp values in the range of 0..=99 and a frequency
-    // of 20 kHz
+    // start timer with timestamp values in the range of 0..=255 and a frequency of 5 kHz
     let timer_clock_cfg_increase = clock_cfg
-        .timer_clock_with_frequency(99, PwmWorkingMode::Increase, 20.kHz())
+        .timer_clock_with_frequency(255, PwmWorkingMode::Increase, 20.kHz())
         .unwrap();
 
-    let timer_clock_cfg_decrease = clock_cfg
-    .timer_clock_with_frequency(99, PwmWorkingMode::Decrease, 20.kHz())
-    .unwrap();
-
     mcpwm.timer0.start(timer_clock_cfg_increase);
-    mcpwm.timer1.start(timer_clock_cfg_decrease);
 
     let delay = delay::Delay::new();
     
     loop {
-        // TODO: increase the LED brightness
-        // pin will be high 50% of the time
-        pwm_pin.set_timestamp(50);
-        delay.delay_millis(500);
-        pwm_pin.set_timestamp(0);
+        let duration = 15;
+
+        // TODO: increase/decrease the LED brightness
+        for i in 0..=255 {
+            pwm_pin.set_timestamp(i);
+            delay.delay_millis(duration);
+
+            if i == 255 {
+                for i in (0..=255).rev() {
+                    pwm_pin.set_timestamp(i);
+                    delay.delay_millis(duration);
+                }
+            }
+        }
     }
 }
