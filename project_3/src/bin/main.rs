@@ -10,6 +10,8 @@ use esp_hal::{delay, prelude::*};
 
 #[entry]
 fn main() -> ! {
+    let resolution = 255;
+    let duration = 15;
     let peripherals = esp_hal::init(esp_hal::Config::default());
 
     let led = Output::new(peripherals.GPIO4, Level::Low);
@@ -28,7 +30,7 @@ fn main() -> ! {
 
     // start timer with timestamp values in the range of 0..=255 and a frequency of 5 kHz
     let timer_clock_cfg_increase = clock_cfg
-        .timer_clock_with_frequency(255, PwmWorkingMode::Increase, 20.kHz())
+        .timer_clock_with_frequency(resolution, PwmWorkingMode::Increase, 5.kHz())
         .unwrap();
 
     mcpwm.timer0.start(timer_clock_cfg_increase);
@@ -36,15 +38,13 @@ fn main() -> ! {
     let delay = delay::Delay::new();
     
     loop {
-        let duration = 15;
-
         // TODO: increase/decrease the LED brightness
-        for i in 0..=255 {
+        for i in 0..=resolution {
             pwm_pin.set_timestamp(i);
             delay.delay_millis(duration);
 
-            if i == 255 {
-                for i in (0..=255).rev() {
+            if i == resolution {
+                for i in (0..=resolution).rev() {
                     pwm_pin.set_timestamp(i);
                     delay.delay_millis(duration);
                 }
