@@ -13,14 +13,17 @@ fn main() -> ! {
 
     esp_println::logger::init_logger_from_env();
 
-    let mut led = Output::new(peripherals.GPIO2, Level::Low);
+    let mut led_green = Output::new(peripherals.GPIO27, Level::Low);
+    let mut led_red = Output::new(peripherals.GPIO26, Level::Low);
 
     let delay = Delay::new();
 
     info!("Blinky...");
 
     loop {
-        led.toggle();
+        led_green.toggle();
+        delay.delay(500.millis());
+        led_red.toggle();
         delay.delay(500.millis());
     }
 }
