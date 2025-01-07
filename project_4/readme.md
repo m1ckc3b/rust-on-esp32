@@ -1,6 +1,6 @@
 # Project #4 - PIR Motion Sensor
 
-When motion is detected the buzzer will sound an alarm.
+When motion is detected the buzzer will sound an alarm during 500 milliseconds.
 
 ![alt text](image.png)
 
