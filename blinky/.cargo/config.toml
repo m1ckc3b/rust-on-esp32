@@ -1,15 +1,16 @@
 [target.xtensa-esp32-none-elf]
-runner = "espflash flash --monitor"
+# runner = "espflash flash --monitor"
+runner = 'probe-rs run --chip esp32'
 
 [env]
 ESP_LOG="INFO"
 
 [build]
-rustflags = [
-  "-C", "link-arg=-nostartfiles",
-]
-
+rustflags = ["-C", "link-arg=-nostartfiles",]
 target = "xtensa-esp32-none-elf"
 
 [unstable]
 build-std = ["core"]
+
+[default.gdb]
+enabled = true
