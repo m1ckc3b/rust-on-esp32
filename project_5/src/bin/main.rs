@@ -1,14 +1,15 @@
 use anyhow::{bail, Result};
 use embedded_svc::{http::Method, io::Write, wifi::*};
+use esp_idf_svc::wifi::{BlockingWifi, EspWifi};
 use esp_idf_svc::{
     eventloop::EspSystemEventLoop,
-    hal::{peripheral::Peripheral, prelude::Peripherals, io::EspIOError,},
-    http::server::{Configuration as OtherConfiguration, EspHttpServer},
+    hal::{io::EspIOError, peripheral::Peripheral, prelude::Peripherals},
+    http::server::{Configuration as HttpServerConfig, EspHttpServer},
     nvs::EspDefaultNvsPartition,
 };
-use esp_idf_svc::wifi::{BlockingWifi, EspWifi};
-use log::*;
 use heapless::String;
+use log::*;
+use std::time::Duration;
 
 // Wifi credentials
 struct WifiCredentials {
@@ -35,48 +36,72 @@ fn main() -> Result<()> {
     };
 
     // Create an http server
-    let mut server = EspHttpServer::new(&OtherConfiguration::default())?;
-    
+    let mut server = EspHttpServer::new(&HttpServerConfig::default())?;
+
+    // Homepage
     server.fn_handler(
         "/",
         Method::Get,
-        |request| -> core::result::Result<(), EspIOError> {
-            let mut response = request.into_ok_response()?;
-            let html = format!(
-                r#"
-                <!DOCTYPE html>
-                <html>
-                    <head>
-                        <meta charset="utf-8">
-                        <title>esp-rs web server</title>
-                    </head>
-                    <body>
-                        <h1>Hello from ESP32</h1>
-                    </body>
-                </html>
-                "#
-            );
-            response.write_all(html.as_bytes())?;
+        |req| -> core::result::Result<(), EspIOError> {
+            let mut resp = req.into_ok_response()?;
+
+            resp.write(include_bytes!("../../assets/index.html"))?;
+
             Ok(())
         },
     )?;
 
+    // Stylesheet
+    server.fn_handler(
+        "/style.css",
+        Method::Get,
+        move |req| -> core::result::Result<(), EspIOError> {
+            let mut resp = req.into_ok_response()?;
+
+            resp.write(include_bytes!("../../assets/style.css"))?;
+
+            Ok(())
+        },
+    )?;
+
+    // Script
+    server.fn_handler(
+        "/script.js",
+        Method::Get,
+        move |req| -> core::result::Result<(), EspIOError> {
+            let mut resp = req.into_ok_response()?;
+
+            resp.write(include_bytes!("../../assets/script.js"))?;
+
+            Ok(())
+        },
+    )?;
+
+    let stop = false;
+
+    while !stop {
+        std::thread::sleep(Duration::from_millis(500));
+    }
+
     Ok(())
 }
 
-fn wifi(modem: impl Peripheral<P = esp_idf_svc::hal::modem::Modem> + 'static,
+fn wifi(
+    modem: impl Peripheral<P = esp_idf_svc::hal::modem::Modem> + 'static,
 ) -> Result<esp_idf_svc::wifi::EspWifi<'static>> {
-
     let mut wifi_credentials = WifiCredentials {
         ssid: String::new(),
-        pass: String::new()
+        pass: String::new(),
     };
 
-    // wifi_credentials.ssid.push_str("Livebox-0960").unwrap();
-    // wifi_credentials.pass.push_str("xid63LTupNQXxakaoS").unwrap();
+    wifi_credentials.ssid.push_str("Livebox-0960").unwrap();
+    wifi_credentials
+        .pass
+        .push_str("xid63LTupNQXxakaoS")
+        .unwrap();
 
-    wifi_credentials.ssid.push_str("Galaxy A506CA8").unwrap();
-    wifi_credentials.pass.push_str("never-never").unwrap();
+    // wifi_credentials.ssid.push_str("Galaxy A506CA8").unwrap();
+    // wifi_credentials.pass.push_str("never-never").unwrap();
 
     let nvs = EspDefaultNvsPartition::take()?;
     let sysloop = EspSystemEventLoop::take()?;
@@ -84,7 +109,11 @@ fn wifi(modem: impl Peripheral<P = esp_idf_svc::hal::modem::Modem> + 'static,
 
     let mut wifi = BlockingWifi::wrap(&mut esp_wifi, sysloop)?;
 
-    wifi.set_configuration(&Configuration::Client(ClientConfiguration::default()))?;
+    wifi.set_configuration(&Configuration::Client(ClientConfiguration {
+        ssid: wifi_credentials.ssid,
+        password: wifi_credentials.pass,
+        ..Default::default()
+    }))?;
 
     info!("Starting WiFi");
     wifi.start()?;
