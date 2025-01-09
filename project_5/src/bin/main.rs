@@ -1,14 +1,16 @@
-use anyhow::{bail, Result};
-use embedded_svc::{http::Method, io::Write, wifi::*};
+use anyhow::{Ok, Result};
+use embedded_svc::{http::Method, wifi::*};
+use esp_idf_svc::hal::gpio::{Output, PinDriver};
 use esp_idf_svc::wifi::{BlockingWifi, EspWifi};
 use esp_idf_svc::{
     eventloop::EspSystemEventLoop,
-    hal::{io::EspIOError, peripheral::Peripheral, prelude::Peripherals},
+    hal::{peripheral::Peripheral, prelude::Peripherals},
     http::server::{Configuration as HttpServerConfig, EspHttpServer},
     nvs::EspDefaultNvsPartition,
 };
 use heapless::String;
 use log::*;
+use std::cell::RefCell;
 use std::time::Duration;
 
 // Wifi credentials
@@ -23,60 +25,16 @@ fn main() -> Result<()> {
 
     let peripherals = Peripherals::take().unwrap();
 
-    // Connect to the WIFI network
-    let _wifi = match wifi(peripherals.modem) {
-        Ok(inner) => {
-            println!("Connected to Wi-Fi network!");
-            inner
-        }
-        Err(err) => {
-            // Red!
-            bail!("Could not connect to Wi-Fi network: {:?}", err)
-        }
-    };
+    let red_led = RefCell::new(PinDriver::output(peripherals.pins.gpio26).unwrap());
+    let green_led = RefCell::new(PinDriver::output(peripherals.pins.gpio27).unwrap());
 
-    // Create an http server
-    let mut server = EspHttpServer::new(&HttpServerConfig::default())?;
+    // Init WIFI
+    let _wifi = wifi(peripherals.modem)?;
 
-    // Homepage
-    server.fn_handler(
-        "/",
-        Method::Get,
-        |req| -> core::result::Result<(), EspIOError> {
-            let mut resp = req.into_ok_response()?;
+    // Init an http server
+    let _httpd = httpd(red_led, green_led)?;
 
-            resp.write(include_bytes!("../../assets/index.html"))?;
-
-            Ok(())
-        },
-    )?;
-
-    // Stylesheet
-    server.fn_handler(
-        "/style.css",
-        Method::Get,
-        move |req| -> core::result::Result<(), EspIOError> {
-            let mut resp = req.into_ok_response()?;
-
-            resp.write(include_bytes!("../../assets/style.css"))?;
-
-            Ok(())
-        },
-    )?;
-
-    // Script
-    server.fn_handler(
-        "/script.js",
-        Method::Get,
-        move |req| -> core::result::Result<(), EspIOError> {
-            let mut resp = req.into_ok_response()?;
-
-            resp.write(include_bytes!("../../assets/script.js"))?;
-
-            Ok(())
-        },
-    )?;
-
+    // LOOP
     let stop = false;
 
     while !stop {
@@ -99,9 +57,6 @@ fn wifi(
         .pass
         .push_str("xid63LTupNQXxakaoS")
         .unwrap();
-
-    // wifi_credentials.ssid.push_str("Galaxy A506CA8").unwrap();
-    // wifi_credentials.pass.push_str("never-never").unwrap();
 
     let nvs = EspDefaultNvsPartition::take()?;
     let sysloop = EspSystemEventLoop::take()?;
@@ -128,4 +83,81 @@ fn wifi(
     info!("Wifi connected. Go to http://{}", &ip_info.ip);
 
     Ok(esp_wifi)
+}
+
+fn httpd<R: esp_idf_svc::hal::gpio::Pin, G: esp_idf_svc::hal::gpio::Pin,>(
+    red_led: RefCell<PinDriver<'static, R, Output>>, 
+    green_led: RefCell<PinDriver<'static, G, Output>>
+) -> Result<esp_idf_svc::http::server::EspHttpServer<'static>> {
+
+    // Create an http server
+    let mut server = EspHttpServer::new(&HttpServerConfig::default())?;
+
+    // Homepage
+    server.fn_handler(
+        "/",
+        Method::Get,
+        move |req| {
+            let mut resp = req.into_response(200, Some("Ok"), &[("Content-Type", "text/html")])?;
+
+            resp.write(include_bytes!("../../assets/index.html"))?;
+
+            Ok(())
+        },
+    )?;
+
+    // Red LED on
+    server.fn_handler(
+        "/red",
+        Method::Get,
+        move |req| {
+            let mut _resp = req.into_ok_response()?;
+
+            red_led.borrow_mut().toggle()?;
+
+            Ok(())
+        },
+    )?;
+
+    // Green LED on
+    server.fn_handler(
+        "/green",
+        Method::Get,
+        move |req| {
+            let mut _resp = req.into_ok_response()?;
+
+            green_led.borrow_mut().toggle()?;
+
+            Ok(())
+        },
+    )?;
+
+    // Stylesheet
+    server.fn_handler(
+        "/style.css",
+        Method::Get,
+        move |req| {
+            let mut resp = req.into_response(200, Some("Ok"), &[("Content-Type", "text/css")])?;
+
+            resp.write(include_bytes!("../../assets/style.css"))?;
+
+            Ok(())
+        },
+    )?;
+
+    // Script
+    server.fn_handler(
+        "/script.js",
+        Method::Get,
+        move |req| {
+            let mut resp =
+                req.into_response(200, Some("Ok"), &[("Content-Type", "text/javascript")])?;
+
+            resp.write(include_bytes!("../../assets/script.js"))?;
+
+            Ok(())
+        },
+    )?;
+
+    Ok(server)
 }
