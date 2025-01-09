@@ -3,12 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js"></script>
-  <title>Document</title>
+  <link rel="stylesheet" href="./style.css">
+  <script src="./script.js"></script>
+  <title>ESP32 - Project #5 - Switch Web Server</title>
 </head>
 <body>
-  <h1>Toggle LEDs</h1>
-  <p><a href="/26/on"><button class="button">LED Green ON</button></a></p>
+  <div class="container">
+    <h1>Toggle LEDs</h1>
+    <p><button class="button green" onclick="toggleGreen()">Green LED</button></p>
+    <p>Green state: <span id="greenState">OFF</span></p>
+    <p><button class="button red" onclick="toggleRed()">Red LED</button></p>
+    <p>Red state: <span id="redState">OFF</span></p>
+  </div>
 </body>
 </html>
