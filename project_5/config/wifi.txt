@@ -1,0 +1,4 @@
+WifiCredentials {
+    ssid: "Livebox-0960",
+    pass: "xid63LTupNQXxakaoS",
+}
