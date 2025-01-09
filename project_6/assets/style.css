@@ -1,0 +1,36 @@
+html {
+  font-family: Helvetica;
+  display: inline-block;
+  margin: 0px auto;
+  text-align: center;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button {
+  border: none;
+  color: white;
+  padding: 16px 40px;
+  text-decoration: none;
+  font-size: 30px;
+  margin: 2px;
+  cursor: pointer;
+}
+
+.red {
+  background-color: red;
+}
+
+.green {
+  background-color: green;
+}
+
+.button2 {
+  background-color: #555555;
+}

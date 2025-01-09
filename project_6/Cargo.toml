@@ -1,0 +1,22 @@
+[package]
+name = "project_6"
+version = "0.1.0"
+edition = "2021"
+
+[profile.dev]
+opt-level = "s"
+debug = true
+
+[profile.release]
+opt-level = "z"
+
+[dependencies]
+anyhow = "1.0.75"
+embedded-svc = "0.28.1"
+esp-idf-svc = "0.50.1"
+heapless = "0.8.0"
+log = "0.4.22"
+build-time = "0.1"
+
+[build-dependencies]
+embuild  = "=0.33.0"
