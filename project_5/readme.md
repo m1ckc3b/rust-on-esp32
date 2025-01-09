@@ -12,7 +12,7 @@ List of parts:
 - Jumper wires
 
 ```
-arduino code
+// arduino code
 
 // Load Wi-Fi library
 #include <WiFi.h>
