@@ -3,29 +3,31 @@
 
 use esp_backtrace as _;
 use esp_hal::{
-    analog::adc::{Adc, AdcConfig, Attenuation}, delay::Delay, prelude::*
+  analog::adc::{Adc, AdcConfig, Attenuation},
+  delay::Delay,
+  gpio::Io,
+  prelude::*,
 };
 use esp_println::println;
 
 #[entry]
 fn main() -> ! {
-    let peripherals = esp_hal::init(esp_hal::Config::default());
+  let peripherals = esp_hal::init(esp_hal::Config::default());
+  let delay = Delay::new();
 
-    let analog_pin = peripherals.GPIO4;
-    let mut adc1_config = AdcConfig::new();
-    let mut pin = adc1_config.enable_pin(
-        analog_pin,
-        Attenuation::Attenuation0dB,
-    );
-    let mut adc1 = Adc::new(peripherals.ADC1, adc1_config);
-    
-    let delay = Delay::new();
-    
-    loop {
-        let pin_value: u16 = nb::block!(adc1.read_oneshot(&mut pin)).unwrap();
+  let io = Io::new(peripherals.GPIO, peripherals.IO_MUX);
 
-        println!("ADC1 value: {}", pin_value);
-    
-        delay.delay_millis(1000);
-    }
+  let mut adc_config = AdcConfig::new();
+
+  let mut adc_pin = adc_config.enable_pin(io.pins.gpio4, Attenuation::Attenuation11dB);
+
+  let mut adc = Adc::new(peripherals.ADC2, adc_config);
+
+  loop {
+      let sample: u16 = nb::block!(adc.read_oneshot(&mut adc_pin)).unwrap();
+
+      println!("ADC value: {}", sample);
+
+      delay.delay_millis(500_u32);   
+  }
 }
