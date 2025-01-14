@@ -25,8 +25,9 @@ fn main() -> Result<()> {
 
     let peripherals = Peripherals::take().unwrap();
 
-    let red_led = RefCell::new(PinDriver::output(peripherals.pins.gpio26).unwrap());
-    let green_led = RefCell::new(PinDriver::output(peripherals.pins.gpio27).unwrap());
+    let red_led = RefCell::new(PinDriver::output(peripherals.pins.gpio13).unwrap());
+    let green_led = RefCell::new(PinDriver::output(peripherals.pins.gpio12).unwrap());
+    let blue_led = RefCell::new(PinDriver::output(peripherals.pins.gpio14).unwrap());
 
     // Init WIFI
     let _wifi = wifi(peripherals.modem)?;
