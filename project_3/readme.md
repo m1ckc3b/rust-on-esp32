@@ -1,6 +1,6 @@
 # Project #3 - PWM Analog Output
 
-Using the PWM protocol to increase/decrease the LED brightness with a resolution of 8 bits and a frequency of 5 Khz.
+Using the PWM protocol to increase/decrease the LED brightness with a resolution of 12 bits and a frequency of 4 Khz.
 
 ![alt text](image.png)
 
