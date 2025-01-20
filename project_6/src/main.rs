@@ -1,5 +1,5 @@
 use anyhow::{Ok, Result};
-use embedded_svc::{http::Method, wifi::*};
+use embedded_svc::{http::{Headers, Method}, io::{Read, Write}, wifi::*};
 use esp_idf_svc::wifi::{BlockingWifi, EspWifi};
 use esp_idf_svc::{
     eventloop::EspSystemEventLoop,
@@ -11,10 +11,19 @@ use heapless::String;
 use log::*;
 use std::time::Duration;
 
+use serde::Deserialize;
+
 // Wifi credentials
 struct WifiCredentials {
     ssid: String<32>,
     pass: String<64>,
+}
+
+#[derive(Deserialize)]
+struct FormData<'a> {
+    red: &'a str,
+    green: &'a str,
+    blue: &'a str,
 }
 
 fn main() -> Result<()> {
@@ -94,6 +103,33 @@ fn httpd() -> Result<esp_idf_svc::http::server::EspHttpServer<'static>> {
             let mut resp = req.into_response(200, Some("Ok"), &[("Content-Type", "text/html")])?;
 
             resp.write(include_bytes!("../assets/index.html"))?;
+
+            Ok(())
+        },
+    )?;
+
+    // Send RGB color
+    server.fn_handler(
+        "/setcolor",
+        Method::Post,
+        |mut req| {
+            let len = req.content_len().unwrap_or(0) as usize;
+
+            if len > 128 {
+                req.into_status_response(413)?
+                    .write_all("Request too big".as_bytes())?;
+                return Ok(());
+            }
+    
+            let mut buf = vec![0; len];
+            req.read_exact(&mut buf)?;
+            let mut resp = req.into_ok_response()?;
+
+            if let Ok(form) = serde_json::from_slice::<FormData>(&buf) {
+                write!(resp, "r:{}, g:{}, b:{}", form.red, form.green, form.blue)?;
+            } else {
+                resp.write_all("JSON error".as_bytes())?;
+            }
 
             Ok(())
         },

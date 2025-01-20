@@ -29,6 +29,7 @@ anyhow = "1.0.95"
 embedded-svc = "0.28.1"
 heapless = "0.8.0"
 build-time = "0.1.3"
+serde = "1.0.217"
 
 [build-dependencies]
 embuild = "0.33"
