@@ -2,7 +2,7 @@
 
 I purchased a basic ESP32 starter kit created by Lafvin with the plan to build each of the 10 projects with Rust instead of Arduino as the documentation calls for. This kit provides an ESP32-WROOM-32 and I also bought an ESP32c3-DevKitm-1 to practice on 2 different microcontroller architecture (xtensa et RISC-V respectively).
 
-Bare-programing with Arduino is easier than with Rust because of the abstraction layers offers by the sdk but Rust gives us more power to handle the bare-metal with high-level programing style even if it is more verbose.
+Bare-programming with Arduino is easier than with Rust because of the abstraction layers offers by the sdk but Rust gives us more power to handle the bare-metal with high-level programing style even if it is more verbose.
 
 For each project, I provide a breadboard schema, a list of components and the arduino code (perhaps I gona upload videos of the finish projects).
 
@@ -10,7 +10,7 @@ Here is the list of projects:
 
 [Project_0](./project_0/) - Hello World + Blinky
 
-The first simple project when one begins in bare-metal programing.
+The first simple project when one begins in bare-metal programming.
 
 
 [Project_1](./project_1/) - Blinky
