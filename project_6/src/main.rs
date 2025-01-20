@@ -20,10 +20,10 @@ struct WifiCredentials {
 }
 
 #[derive(Deserialize)]
-struct FormData<'a> {
-    red: &'a str,
-    green: &'a str,
-    blue: &'a str,
+struct FormData {
+    red: u8,
+    green: u8,
+    blue: u8,
 }
 
 fn main() -> Result<()> {
@@ -113,6 +113,7 @@ fn httpd() -> Result<esp_idf_svc::http::server::EspHttpServer<'static>> {
         "/setcolor",
         Method::Post,
         |mut req| {
+
             let len = req.content_len().unwrap_or(0) as usize;
 
             if len > 128 {
@@ -123,13 +124,13 @@ fn httpd() -> Result<esp_idf_svc::http::server::EspHttpServer<'static>> {
     
             let mut buf = vec![0; len];
             req.read_exact(&mut buf)?;
-            let mut resp = req.into_ok_response()?;
 
-            if let Ok(form) = serde_json::from_slice::<FormData>(&buf) {
-                write!(resp, "r:{}, g:{}, b:{}", form.red, form.green, form.blue)?;
-            } else {
-                resp.write_all("JSON error".as_bytes())?;
-            }
+            let request = serde_json::from_slice::<FormData>(&buf).unwrap();
+            info!("r:{}, g:{}, b:{}", request.red, request.green, request.blue);
+
+            // TO-DO
+            // implement ADC
+            // Output RGB LED
 
             Ok(())
         },
