@@ -1,6 +1,6 @@
 # Rust on ESP32
 
-I purchased a basic ESP32 starter kit created by Lafvin with the plan to build each of the 12 projects with Rust instead of Arduino as the documentation calls for.
+I purchased a basic ESP32 starter kit created by Lafvin with the plan to build each of the 10 projects with Rust instead of Arduino as the documentation calls for.
 
 Bare-programing with Arduino is easier than Rust because of the abstraction layers offers by the sdk but Rust gives us more power to handle the bare-metal with high-level programing style.
 
@@ -34,13 +34,15 @@ When motion is detected the buzzer will sound an alarm during 500 milliseconds.
 
 Creating a standalone web server that controls (outputs) two Leds. The web server is mobile responsive and can be accessed with any device that as a browser on the local network.
 
-<!-- [Project_6](./project_6/):
-[Project_7](./project_7/):
-[Project_8](./project_8/):
-[Project_9](./project_9/):
-[Project_10](./project_10/):
-[Project_11](./project_11/):
-[Project_12](./project_12/): -->
+Project_6 - RGB LED Web Server
+
+Project_7 - Relay Web Server
+
+Project_8 - Output State Synchronization Web Server
+
+Project_9 - DHT11 Web Server
+
+Project_10 - OLED Display
 
 
 
