@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./script.js"></script>
+  <title>ESP32 - Project #6 - RGB LED Web Server</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Choose a color</h1>
+    <p>and then click on the 
+      "Set the LED" button</p>
+    <div class="color-picker-container">
+      <canvas class="color-picker" id="colorPicker"></canvas>
+    </div>
+    <button class="color-preview" id="colorPreview" onclick="setLedColor()"><h2>Set the LED</h2></button>
+  </div>
+</body>
+</html>
