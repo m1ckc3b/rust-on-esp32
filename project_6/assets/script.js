@@ -90,7 +90,19 @@ if (match) {
   const green = parseInt(match[2], 10);
   const blue = parseInt(match[3], 10);
 
-  console.log("Red:", red, "Green:", green, "Blue:", blue);
+  const request = new Request("/setcolor", {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+    body: JSON.stringify({
+      red,
+      green,
+      blue
+    })
+  })
+
+  fetch(request)
 } else {
   console.log("La chaîne n'est pas au format attendu.");
 }
