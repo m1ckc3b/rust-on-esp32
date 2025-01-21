@@ -4,6 +4,8 @@ I purchased a basic ESP32 starter kit created by Lafvin with the plan to build e
 
 Bare-programming with Arduino is easier than with Rust because of the abstraction layers offers by the sdk but Rust gives us more power to handle the bare-metal with high-level programing style even if it is more verbose.
 
+On ESP32 one can develop as with any other microcontroller by using no_std mode. But thanks to the esp-idf-svc crate (IDF means IoT Development Framework) one can use Rust as usual, that means on std mode. So I used one or the other depending on the type of the project. When it was needed to implement a web server I chose to use the std mode (with esp-idf-svc as framework) instead of implement all from scratch. 
+
 For each project, I provide a breadboard schema, a list of components and the arduino code (perhaps I gona upload videos of the finish projects).
 
 <img src="./basic_starter_kit.png" alt="ESP32 basic starter kit" width="500" />
