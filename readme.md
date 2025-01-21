@@ -6,6 +6,10 @@ Bare-programming with Arduino is easier than with Rust because of the abstractio
 
 For each project, I provide a breadboard schema, a list of components and the arduino code (perhaps I gona upload videos of the finish projects).
 
+<img src="./basic_starter_kit.png" alt="ESP32 basic starter kit" width="500" />
+
+## Projects
+
 Here is the list of projects:
 
 [Project_0](./project_0/) - Hello World + Blinky
