@@ -12,44 +12,67 @@ Here is the list of projects:
 
 The first simple project when one begins in bare-metal programming.
 
-`target = ""`
+```
+target = ESP32
+type = no_std
+```
 
 [Project_1](./project_1/) - Blinky
 
 Simple project with a pushbutton and an LED.
 
-`target = ""`
+```
+target = ESP32
+type = no_std
+```
 
 [Project_2](./project_2/) - Analog Inputs (ADC)
 
 Reading an analog voltage value varying between 0V and 3.3V. The voltage measured is then assigned to a value between 0 (0V) and 4095 (3.3V) because the value has 12-bit resolution.
 
-`target = ""`
+```
+target = ESP32
+type = no_std
+```
 
 
 [Project_3](./project_3/) - PWM Analog Output
 
 Using the PWM protocol to increase/decrease the LED brightness with a resolution of 12 bits and a frequency of 4 Khz.
 
-`target = ""`
+```
+target = ESP32
+type = no_std
+```
 
 
 [Project_4](./project_4/) - PIR Motion Sensor
 
 When motion is detected the buzzer will sound an alarm during 500 milliseconds.
 
-`target = ""`
+```
+target = ESP32
+type = no_std
+```
 
 
 [Project_5](./project_5/) - Switch Web Server
 
-Creating a standalone web server that controls (outputs) two Leds. The web server is mobile responsive and can be accessed with any device that as a browser on the local network.
+Creating a standalone web server that controls (outputs) two Leds. The web server must be mobile responsive and can be accessed with any device that as a browser on the local network.
 
-`target = "xtensa-esp32-espidf"`
+```
+target = ESP32
+type = std
+```
 
-Project_6 - RGB LED Web Server
+[Project_6](./project_6/) - RGB LED Web Server
 
-`target = "riscv32imc-esp-espidf"`
+Creating a web sever to change the color of a RGB LED. The web server must be mobile responsive and can be accessed with any device that as a browser on the local network.
+
+```
+target = ESP32c3
+type = std
+```
 
 Project_7 - Relay Web Server
 
