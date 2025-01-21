@@ -1,3 +1,3 @@
 fn main() {
-    println!("cargo:rustc-link-arg=-Tlinkall.x");
+    embuild::espidf::sysenv::output();
 }
