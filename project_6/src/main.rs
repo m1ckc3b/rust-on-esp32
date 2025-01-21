@@ -1,16 +1,17 @@
 use anyhow::{Ok, Result};
 use embedded_svc::{http::{Headers, Method}, io::{Read, Write}, wifi::*};
-use esp_idf_svc::wifi::{BlockingWifi, EspWifi};
 use esp_idf_svc::{
     eventloop::EspSystemEventLoop,
     hal::{peripheral::Peripheral, prelude::Peripherals},
+    hal::ledc::{config::TimerConfig, LedcTimerDriver, LedcDriver, Resolution},
+    hal::prelude::*,
     http::server::{Configuration as HttpServerConfig, EspHttpServer},
     nvs::EspDefaultNvsPartition,
+    wifi::{BlockingWifi, EspWifi}
 };
 use heapless::String;
 use log::*;
-use std::time::Duration;
-
+use std::{cell::{RefCell, RefMut}, time::Duration};
 use serde::Deserialize;
 
 // Wifi credentials
@@ -32,12 +33,30 @@ fn main() -> Result<()> {
 
     let peripherals = Peripherals::take().unwrap();
 
+    // LEDC
+    let timer_driver = LedcTimerDriver::new(
+        peripherals.ledc.timer0, 
+        &TimerConfig::default()
+            .frequency(5000.Hz())
+            .resolution(Resolution::Bits8)
+    ).unwrap();
+
+    let red_pin = RefCell::new(LedcDriver::new(peripherals.ledc.channel0, &timer_driver, peripherals.pins.gpio1).unwrap());
+    let green_pin = RefCell::new(LedcDriver::new(peripherals.ledc.channel1, &timer_driver, peripherals.pins.gpio2).unwrap());
+    let blue_pin = RefCell::new(LedcDriver::new(peripherals.ledc.channel2, &timer_driver, peripherals.pins.gpio3).unwrap());
+
+    red_pin.borrow_mut().set_duty(67).unwrap();
+    red_pin.borrow_mut().enable().unwrap();
+    green_pin.borrow_mut().set_duty(89).unwrap();
+    green_pin.borrow_mut().enable().unwrap();
+    blue_pin.borrow_mut().set_duty(96).unwrap();
+    blue_pin.borrow_mut().enable().unwrap();
 
     // Init WIFI
     let _wifi = wifi(peripherals.modem)?;
 
     // Init an http server
-    let _httpd = httpd()?;
+    let _httpd = httpd(red_pin, green_pin, blue_pin)?;
 
     // LOOP
     let stop = false;
@@ -90,7 +109,11 @@ fn wifi(
     Ok(esp_wifi)
 }
 
-fn httpd() -> Result<esp_idf_svc::http::server::EspHttpServer<'static>> {
+fn httpd(
+    red_pin: RefCell<LedcDriver<'static>>,
+    green_pin: RefCell<LedcDriver<'static>>,
+    blue_pin: RefCell<LedcDriver<'static>>,
+) -> Result<esp_idf_svc::http::server::EspHttpServer<'static>> {
 
     // Create an http server
     let mut server = EspHttpServer::new(&HttpServerConfig::default())?;
@@ -112,7 +135,7 @@ fn httpd() -> Result<esp_idf_svc::http::server::EspHttpServer<'static>> {
     server.fn_handler(
         "/setcolor",
         Method::Post,
-        |mut req| {
+        move |mut req| {
 
             let len = req.content_len().unwrap_or(0) as usize;
 
@@ -128,9 +151,13 @@ fn httpd() -> Result<esp_idf_svc::http::server::EspHttpServer<'static>> {
             let request = serde_json::from_slice::<FormData>(&buf).unwrap();
             info!("r:{}, g:{}, b:{}", request.red, request.green, request.blue);
 
-            // TO-DO
-            // implement ADC
-            // Output RGB LED
+            set_color(
+                red_pin.borrow_mut(), 
+                green_pin.borrow_mut(), 
+                blue_pin.borrow_mut(), 
+                request.red, 
+                request.green, 
+                request.blue);
 
             Ok(())
         },
@@ -164,4 +191,25 @@ fn httpd() -> Result<esp_idf_svc::http::server::EspHttpServer<'static>> {
     )?;
 
     Ok(server)
+}
+
+fn set_color(
+    mut red_pin: RefMut<'_, LedcDriver<'static>>,
+    mut green_pin: RefMut<'_, LedcDriver<'static>>,
+    mut blue_pin: RefMut<'_, LedcDriver<'static>>,
+    red: u8, 
+    green: u8, 
+    blue: u8
+) {
+    let max_value: f32 = 255.0;
+
+    let red_duty = (red as f32 * 100.0 / max_value).round() as u32;
+    let green_duty = (green as f32 * 100.0 / max_value).round() as u32;
+    let blue_duty = (blue as f32 * 100.0 / max_value).round() as u32;
+
+    info!("r:{}, g:{}, b:{}", red_duty, green_duty, blue_duty);
+
+    red_pin.set_duty(red_duty).unwrap();
+    green_pin.set_duty(green_duty).unwrap();
+    blue_pin.set_duty(blue_duty).unwrap();
 }
