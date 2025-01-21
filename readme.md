@@ -74,7 +74,14 @@ target = ESP32c3
 type = std
 ```
 
-Project_7 - Relay Web Server
+[Project_7](./project_7/) - Relay Web Server
+
+Creating a web server to control electrical appliances remotely thanks to a relay. Abviously, the web server must be responsive and accessible from any device.
+
+```
+target = ESP32c3
+type = std
+```
 
 Project_8 - Output State Synchronization Web Server
 
