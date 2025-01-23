@@ -90,7 +90,9 @@ target = ESP32c3
 type = std
 ```
 
-Project_8 - Output State Synchronization Web Server
+[Project_8](./project_8/) - Output State Synchronization Web Server
+
+Controlling ESP outputs by using a web server and/or a physical button. The output state is updated on the web page wether it is changed via physical button or web server.
 
 Project_9 - DHT11 Web Server
 
