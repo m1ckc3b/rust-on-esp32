@@ -1,6 +1,7 @@
 # Rust on ESP32
 
-I purchased a basic ESP32 starter kit created by Lafvin with the plan to build each of the 10 projects with Rust instead of Arduino as the documentation calls for. This kit provides an ESP32-WROOM-32 and I also bought an ESP32c3-DevKitm-1 and a Raspberry Pi Pico W to practice on different microcontroller architectures (xtensa, RISC-V and Cortex-M0+ respectively). In this repo I focused on ESPs and I dedicated another [repo to the Pico W]().
+I purchased a basic ESP32 starter kit created by Lafvin with the plan to build each of the 10 projects with Rust instead of Arduino as the documentation calls for. This kit provides an ESP32-WROOM-32 and I also bought an ESP32c3-DevKitm-1 and a Raspberry Pi Pico W to practice on different microcontroller architectures (xtensa, RISC-V and Cortex-M0+ respectively). In this repo I focused on ESPs and I dedicated another [repo to the Pico W](https://github.com/m1ckc3b/rust-on-picoW).
+
 
 Bare-programming with Arduino is easier than with Rust because of the abstraction layers offers by the sdk but Rust gives us more power to handle the bare-metal with high-level programing style even if it is more verbose.
 
