@@ -20,3 +20,9 @@ build-time = "0.1"
 
 [build-dependencies]
 embuild  = "=0.33.0"
+
+[[bin]]
+name = "main"
+test = false
+doctest = false
+bench = false

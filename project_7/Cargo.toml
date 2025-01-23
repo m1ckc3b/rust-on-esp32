@@ -28,3 +28,9 @@ esp-idf-svc = { version = "0.51", features = ["critical-section", "embassy-time-
 
 [build-dependencies]
 embuild = "0.33"
+
+[[bin]]
+name = "main"
+test = false
+doctest = false
+bench = false
