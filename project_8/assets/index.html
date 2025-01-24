@@ -3,8 +3,104 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="./style.css">
-  <script src="./script.js"></script>
+  <style>
+    html {
+    font-family: Helvetica;
+    display: inline-block;
+    margin: 0px auto;
+    text-align: center;
+  }
+
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .led {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    /* background-color: grey;  */
+    border-radius: 50%;
+    /* box-shadow: 0 0 10px green; */
+    margin-left: 5px;
+  }
+
+  .off {
+    background-color: grey; 
+  }
+
+  .on {
+    background-color: rgb(36, 236, 36); 
+    box-shadow: 0 0 10px green;
+  }
+
+  /* The switch - the box around the slider */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+
+  .slider.round:before {
+    border-radius: 50%;
+  }
+  </style>
   <title>ESP32 - Project #8 - Switch Web Server</title>
 </head>
 <body>
@@ -19,5 +115,26 @@
     </div>
     
   </div>
+
+  <script>
+    function toggleGreen() {
+  fetch('/green').then(res => {
+    if (res.ok) {
+      const input_red = document.querySelector("#input_green").checked
+      const led = document.querySelector(".led")
+
+      if (input_red) {
+        led.classList.remove('off')
+        led.classList.add('on')
+      } else {
+        led.classList.remove('on')
+        led.classList.add('off')
+      }
+    } else {
+        console.error("Erreur avec la requête")
+      }
+  })
+}
+  </script>
 </body>
 </html>
