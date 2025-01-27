@@ -67,3 +67,10 @@ incremental      = false
 lto              = 'fat'
 opt-level        = 's'
 overflow-checks  = false
+
+
+[[bin]]
+name = "main"
+test = false
+doctest = false
+bench = false
