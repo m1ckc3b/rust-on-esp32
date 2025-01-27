@@ -12,7 +12,7 @@ use log::info;
 
 extern crate alloc;
 
-use async_webserver as lib;
+use project_8 as lib;
 
 #[main]
 async fn main(spawner: Spawner) {
