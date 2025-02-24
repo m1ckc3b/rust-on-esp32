@@ -52,6 +52,8 @@ target = ESP32
 type = no_std
 ```
 
+[](./project_3.gif)
+
 
 [Project_4](./project_4/) - PIR Motion Sensor
 
