@@ -4,8 +4,7 @@
 use embassy_executor::Spawner;
 use esp_alloc as _;
 use esp_backtrace as _;
-use esp_hal::{clock::CpuClock, rng::Rng};
-use esp_hal_embassy::main;
+use esp_hal::{clock::CpuClock, rng::Rng, gpio::{Output, Level}};
 use esp_println::println;
 use esp_wifi::EspWifiController;
 use log::info;
@@ -14,7 +13,7 @@ extern crate alloc;
 
 use project_8 as lib;
 
-#[main]
+#[esp_hal_embassy::main]
 async fn main(spawner: Spawner) {
     let peripherals = esp_hal::init({
         let mut config = esp_hal::Config::default();
@@ -52,4 +51,7 @@ async fn main(spawner: Spawner) {
         ));
     }
     println!("Web server started...");
+
+    let led = Output::new(peripherals.GPIO3, Level::Low);
+    spawner.must_spawn(lib::led::led_task(led));
 }

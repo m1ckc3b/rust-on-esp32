@@ -3,6 +3,7 @@
 
 pub mod web;
 pub mod wifi;
+pub mod led;
 
 #[macro_export]
 macro_rules! mk_static {

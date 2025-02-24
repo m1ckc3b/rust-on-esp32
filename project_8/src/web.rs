@@ -15,6 +15,7 @@ impl AppBuilder for Application {
             "/",
             routing::get_service(File::html(include_str!("../assets/index.html"))),
         )
+        .route("/led", routing::get(crate::led::led_handler))
     }
 }
 
@@ -65,5 +66,46 @@ impl Default for WebApp {
         );
 
         Self { router, config }
+    }
+}
+
+struct WebsocketEcho;
+
+impl ws::WebSocketCallback for WebsocketEcho {
+    async fn run<R: embedded_io_async::Read, W: embedded_io_async::Write<Error = R::Error>>(
+        self,
+        mut rx: ws::SocketRx<R>,
+        mut tx: ws::SocketTx<W>,
+    ) -> Result<(), W::Error> {
+        let mut buffer = [0; 1024];
+
+        let close_reason = loop {
+            match rx.next_message(&mut buffer).await {
+                Ok(ws::Message::Text(data)) => tx.send_text(data).await,
+                Ok(ws::Message::Binary(data)) => tx.send_binary(data).await,
+                Ok(ws::Message::Close(reason)) => {
+                    log::info!("Websocket close reason: {reason:?}");
+                    break None;
+                }
+                Ok(ws::Message::Ping(data)) => tx.send_pong(data).await,
+                Ok(ws::Message::Pong(_)) => continue,
+                Err(err) => {
+                    log::error!("Websocket Error: {err:?}");
+
+                    let code = match err {
+                        ws::ReadMessageError::Io(err) => return Err(err),
+                        ws::ReadMessageError::ReadFrameError(_)
+                        | ws::ReadMessageError::MessageStartsWithContinuation
+                        | ws::ReadMessageError::UnexpectedMessageStart => 1002,
+                        ws::ReadMessageError::ReservedOpcode(_) => 1003,
+                        ws::ReadMessageError::TextIsNotUtf8 => 1007,
+                    };
+
+                    break Some((code, "Websocket Error"));
+                }
+            }?;
+        };
+
+        tx.close(close_reason).await
     }
 }

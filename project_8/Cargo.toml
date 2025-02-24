@@ -4,8 +4,11 @@ name    = "project_8"
 version = "0.1.0"
 
 [[bin]]
-name = "async-webserver"
-path = "./src/bin/async_main.rs"
+name = "project_8"
+path = "./src/bin/main.rs"
+
+[lib]
+proc-macro = true
 
 [dependencies]
 embassy-net = { version = "0.6.0", features = [
@@ -67,10 +70,3 @@ incremental      = false
 lto              = 'fat'
 opt-level        = 's'
 overflow-checks  = false
-
-
-[[bin]]
-name = "main"
-test = false
-doctest = false
-bench = false
