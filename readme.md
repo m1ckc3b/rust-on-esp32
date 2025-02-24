@@ -15,7 +15,7 @@ For each project, I provide a breadboard schema, a list of components and the ar
 
 Here is the list of projects:
 
-[Project_0](./project_0/) - Hello World + Blinky
+### [Project_0](./project_0/) - Hello World + Blinky
 
 The first simple project when one begins in bare-metal programming.
 
@@ -24,7 +24,7 @@ target = ESP32
 type = no_std
 ```
 
-[Project_1](./project_1/) - Blinky
+### [Project_1](./project_1/) - Blinky
 
 Simple project with a pushbutton and an LED.
 
@@ -33,7 +33,7 @@ target = ESP32
 type = no_std
 ```
 
-[Project_2](./project_2/) - Analog Inputs (ADC)
+### [Project_2](./project_2/) - Analog Inputs (ADC)
 
 Reading an analog voltage value varying between 0V and 3.3V. The voltage measured is then assigned to a value between 0 (0V) and 4095 (3.3V) because the value has 12-bit resolution.
 
@@ -43,7 +43,7 @@ type = no_std
 ```
 
 
-[Project_3](./project_3/) - PWM Analog Output
+### [Project_3](./project_3/) - PWM Analog Output
 
 Using the PWM protocol to increase/decrease the LED brightness with a resolution of 12 bits and a frequency of 4 Khz.
 
@@ -52,10 +52,10 @@ target = ESP32
 type = no_std
 ```
 
-[](./project_3.gif)
+![image](./project_3.gif)
 
 
-[Project_4](./project_4/) - PIR Motion Sensor
+### [Project_4](./project_4/) - PIR Motion Sensor
 
 When motion is detected the buzzer will sound an alarm during 500 milliseconds.
 
@@ -65,7 +65,7 @@ type = no_std
 ```
 
 
-[Project_5](./project_5/) - Switch Web Server
+### [Project_5](./project_5/) - Switch Web Server
 
 Creating a standalone web server that controls (outputs) two Leds. The web server must be mobile responsive and can be accessed with any device that as a browser on the local network.
 
@@ -74,7 +74,9 @@ target = ESP32
 type = std
 ```
 
-[Project_6](./project_6/) - RGB LED Web Server
+![image](./project_5.gif)
+
+### [Project_6](./project_6/) - RGB LED Web Server
 
 Creating a web sever to change the color of a RGB LED. The web server must be mobile responsive and can be accessed with any device that as a browser on the local network.
 
@@ -83,7 +85,9 @@ target = ESP32c3
 type = std
 ```
 
-[Project_7](./project_7/) - Relay Web Server
+![image](./project_6.gif)
+
+### [Project_7](./project_7/) - Relay Web Server
 
 Creating a web server to control electrical appliances remotely thanks to a relay. Abviously, the web server must be responsive and accessible from any device.
 
@@ -91,8 +95,9 @@ Creating a web server to control electrical appliances remotely thanks to a rela
 target = ESP32c3
 type = std
 ```
+![image](./project_7.gif)
 
-[Project_8](./project_8/) - Output State Synchronization Web Server
+### [Project_8](./project_8/) - Output State Synchronization Web Server
 
 Controlling ESP outputs by using a web server and/or a physical button. The output state is updated on the web page wether it is changed via physical button or web server.
 
@@ -101,9 +106,9 @@ target = ESP32c3
 type = no_std + async
 ```
 
-Project_9 - DHT11 Web Server
+### Project_9 - DHT11 Web Server
 
-Project_10 - OLED Display
+### Project_10 - OLED Display
 
 
 
